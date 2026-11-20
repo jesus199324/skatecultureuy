@@ -104,3 +104,72 @@ export interface HomePayload {
   culture: ArticleSummary[];
   events: EventSummary[];
 }
+
+/* ───────── Fase 3: páginas internas ───────── */
+
+/** Página de un listado con "Cargar más": items acumulados hasta la página pedida. */
+export interface Paginated<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+}
+
+/** Bloques del cuerpo de una nota (se guardan como JSON en la base). */
+export type ArticleBlock =
+  | { type: "paragraph"; text: string }
+  | { type: "heading"; text: string }
+  | { type: "quote"; text: string; attribution: string | null }
+  | { type: "qa"; question: string; answer: string }
+  | { type: "image"; image: MediaAsset; caption: string | null };
+
+export interface VideoEmbed {
+  provider: "YOUTUBE" | "VIMEO";
+  /** null en demo: no hay video real. */
+  videoId: string | null;
+  title: string;
+}
+
+export interface ArticleDetail extends ArticleSummary {
+  body: ArticleBlock[];
+  gallery: MediaAsset[];
+  video: VideoEmbed | null;
+  /** Skaters y spots mencionados en la nota. */
+  skaters: SkaterSummary[];
+  spots: SpotSummary[];
+  related: ArticleSummary[];
+}
+
+export interface SkaterDetail extends SkaterSummary {
+  bio: string;
+  stance: "REGULAR" | "GOOFY" | null;
+  instagram: string | null;
+  articles: ArticleSummary[];
+}
+
+/**
+ * Precisión de la ubicación pública. AREA = solo departamento y barrio
+ * (spots de calle y DIY, para no quemarlos). EXACT = dirección y mapa
+ * (solo skateparks públicos).
+ */
+export type LocationPrecision = "EXACT" | "AREA";
+
+export interface SpotDetail extends SpotSummary {
+  description: string;
+  /** Barrio o localidad. */
+  locality: string;
+  locationPrecision: LocationPrecision;
+  /** Solo con precisión EXACT. */
+  address: string | null;
+  coordinates: { lat: number; lng: number } | null;
+  gallery: MediaAsset[];
+  articles: ArticleSummary[];
+}
+
+export interface EventDetail extends EventSummary {
+  description: string;
+  coverImage: MediaAsset | null;
+  /** Spot donde se hace, si está en la revista. */
+  spot: SpotSummary | null;
+}

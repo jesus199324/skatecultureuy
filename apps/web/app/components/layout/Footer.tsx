@@ -1,5 +1,6 @@
 import { NAV_ITEMS } from "../../../../../packages/shared/src";
 import { Grain, SunDoodle } from "../ui/primitives";
+import { A } from "../ui/A";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -16,14 +17,14 @@ export function Footer() {
           </div>
           <nav aria-label="Secciones (pie)" className="label flex flex-col gap-2.5 text-[15px] md:col-span-3">
             {NAV_ITEMS.filter((i) => i.href !== "/about").map((i) => (
-              <a key={i.href} href={i.href} className="hover:text-sun">{i.label}</a>
+              <A key={i.href} href={i.href} className="hover:text-sun">{i.label}</A>
             ))}
           </nav>
           <div className="label flex flex-col gap-2.5 text-[15px] md:col-span-3">
-            <a href="/about" className="hover:text-sun">ABOUT</a>
-            <a href="/about#enviar" className="hover:text-sun">ENVIAR MATERIAL</a>
-            <a href="/about#contacto" className="hover:text-sun">CONTACTO</a>
-            <a href="https://instagram.com/" className="hover:text-sun">INSTAGRAM</a>
+            <A href="/about" className="hover:text-sun">ABOUT</A>
+            <A href="/about#enviar" className="hover:text-sun">ENVIAR MATERIAL</A>
+            <A href="/about#contacto" className="hover:text-sun">CONTACTO</A>
+            <A href="https://instagram.com/" className="hover:text-sun">INSTAGRAM</A>
           </div>
         </div>
         <div className="flex flex-wrap justify-between gap-4 border-t border-[#4A4946] pt-5 text-[13px] text-stone">
@@ -31,9 +32,9 @@ export function Footer() {
           <span>El contenido marcado DEMO es ficticio y está solo para probar la plataforma.</span>
           <span className="w-full border-t border-[#4A4946] pt-4 md:w-auto md:border-0 md:pt-0">
             Diseño y desarrollo:{" "}
-            <a href="https://micv-brown.vercel.app/" target="_blank" rel="noopener author" className="font-semibold text-bone underline decoration-celeste decoration-2 underline-offset-4 hover:text-celeste">
+            <A href="https://micv-brown.vercel.app/" target="_blank" rel="noopener author" className="font-semibold text-bone underline decoration-celeste decoration-2 underline-offset-4 hover:text-celeste">
               Jesús Albornoz
-            </a>
+            </A>
           </span>
         </div>
       </div>

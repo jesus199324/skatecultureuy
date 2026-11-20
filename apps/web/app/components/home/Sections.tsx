@@ -9,6 +9,7 @@ import { FilmFrame, Photo, Polaroid } from "../editorial/Photo";
 import { Reveal } from "../editorial/Reveal";
 import { RuleHeader, SectionTitle } from "../editorial/SectionTitle";
 import { ButtonLink, Grain, MarkerNote, Scribble, Sticker, SunDoodle, Tag, Tape, cx } from "../ui/primitives";
+import { A } from "../ui/A";
 
 const storyHref = (a: ArticleSummary) => `/stories/${a.slug}`;
 const FORMAT_LABEL: Record<ArticleFormat, string> = { STORY: "Historia", INTERVIEW: "Entrevista", GALLERY: "Galería", VIDEO: "Video", NEWS: "Noticia" };
@@ -23,18 +24,18 @@ export function LatestSection({ items }: { items: ArticleSummary[] }) {
       <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
         {lead && (
           <Reveal as="article" className="group flex flex-col gap-3.5 md:col-span-6">
-            <a href={storyHref(lead)} aria-label={`Leer: ${lead.title}`}><Photo asset={lead.coverImage} sizes="(min-width: 768px) 50vw, 100vw" className="h-[360px] md:h-[520px]" caption="Foto demo · retrato" /></a>
+            <A href={storyHref(lead)} aria-label={`Leer: ${lead.title}`}><Photo asset={lead.coverImage} sizes="(min-width: 768px) 50vw, 100vw" className="h-[360px] md:h-[520px]" caption="Foto demo · retrato" /></A>
             <Tag demo={lead.isDemo}>{FORMAT_LABEL[lead.format]}</Tag>
-            <h3 className="m-0 font-display text-3xl leading-none tracking-[-0.01em] md:text-[40px]"><a href={storyHref(lead)} className="hl">{lead.title}</a></h3>
+            <h3 className="m-0 font-display text-3xl leading-none tracking-[-0.01em] md:text-[40px]"><A href={storyHref(lead)} className="hl">{lead.title}</A></h3>
             <p className="m-0 max-w-[52ch] leading-relaxed text-body">{lead.excerpt}</p>
           </Reveal>
         )}
         <div className="flex flex-col gap-10 md:col-span-3 md:pt-24">
           {[m1, m2].filter(Boolean).map((a, i) => (
             <Reveal as="article" key={a.id} delay={i * 120} className="group flex flex-col gap-3">
-              <a href={storyHref(a)} aria-label={`Leer: ${a.title}`}><Photo asset={a.coverImage} sizes="(min-width: 768px) 25vw, 100vw" className={i === 0 ? "h-[300px]" : "h-[200px]"} caption="Foto demo" /></a>
+              <A href={storyHref(a)} aria-label={`Leer: ${a.title}`}><Photo asset={a.coverImage} sizes="(min-width: 768px) 25vw, 100vw" className={i === 0 ? "h-[300px]" : "h-[200px]"} caption="Foto demo" /></A>
               <Tag demo={a.isDemo}>{a.category.name} · {FORMAT_LABEL[a.format]}</Tag>
-              <h3 className="m-0 font-display text-2xl leading-[1.05]"><a href={storyHref(a)} className="hl">{a.title}</a></h3>
+              <h3 className="m-0 font-display text-2xl leading-[1.05]"><A href={storyHref(a)} className="hl">{a.title}</A></h3>
             </Reveal>
           ))}
         </div>
@@ -42,10 +43,10 @@ export function LatestSection({ items }: { items: ArticleSummary[] }) {
           {list.map((a, i) => (
             <li key={a.id} className="group flex gap-4 border-b border-stone py-5">
               <span aria-hidden="true" className="font-display text-[28px] leading-none text-accent">{pad2(i + 2)}</span>
-              <a href={storyHref(a)} className="flex flex-col gap-1.5">
+              <A href={storyHref(a)} className="flex flex-col gap-1.5">
                 <Tag demo={a.isDemo} className="text-[12px]">{a.category.name}</Tag>
                 <span className="hl font-display text-[19px] leading-[1.1]">{a.title}</span>
-              </a>
+              </A>
             </li>
           ))}
         </ol>
@@ -84,7 +85,7 @@ export function StreetSection({ items }: { items: ArticleSummary[] }) {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
             <article className="group flex flex-col gap-3.5 md:col-span-8">
               <FilmFrame frame="SCUY 400 ▸ 07">
-                <a href={storyHref(main)} aria-label={`${main.format === "VIDEO" ? "Ver video" : "Leer"}: ${main.title}`} className="block">
+                <A href={storyHref(main)} aria-label={`${main.format === "VIDEO" ? "Ver video" : "Leer"}: ${main.title}`} className="block">
                   <Photo asset={main.coverImage} sizes="(min-width: 768px) 66vw, 100vw" className="h-[300px] md:h-[460px]" caption={main.format === "VIDEO" ? `Video demo · YouTube / Vimeo · ${main.videoDuration ?? ""}` : "Foto demo"}>
                     {main.format === "VIDEO" && (
                       <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-[88px] w-[88px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-[3px] border-bone bg-celeste transition-transform group-hover:scale-110">
@@ -92,19 +93,19 @@ export function StreetSection({ items }: { items: ArticleSummary[] }) {
                       </span>
                     )}
                   </Photo>
-                </a>
+                </A>
               </FilmFrame>
               <Tag onDark demo={main.isDemo}>{FORMAT_LABEL[main.format]}</Tag>
-              <h3 className="m-0 font-display text-3xl uppercase leading-none md:text-[40px]"><a href={storyHref(main)} className="hl">{main.title}</a></h3>
+              <h3 className="m-0 font-display text-3xl uppercase leading-none md:text-[40px]"><A href={storyHref(main)} className="hl">{main.title}</A></h3>
             </article>
             <div className="grid grid-cols-1 gap-6 md:col-span-4">
               {side.slice(0, 2).map((a, i) => (
                 <article key={a.id} className="group flex flex-col gap-2.5">
-                  <a href={storyHref(a)} aria-label={`Leer: ${a.title}`} className="block" style={{ transform: `rotate(${i === 0 ? 1.5 : -1.2}deg)` }}>
+                  <A href={storyHref(a)} aria-label={`Leer: ${a.title}`} className="block" style={{ transform: `rotate(${i === 0 ? 1.5 : -1.2}deg)` }}>
                     <Photo asset={a.coverImage} sizes="(min-width: 768px) 33vw, 100vw" className="h-[240px]" caption="Foto demo" />
-                  </a>
+                  </A>
                   <Tag onDark demo={a.isDemo}>{FORMAT_LABEL[a.format]}</Tag>
-                  <h3 className="m-0 font-display text-[22px] leading-[1.05]"><a href={storyHref(a)} className="hl">{a.title}</a></h3>
+                  <h3 className="m-0 font-display text-[22px] leading-[1.05]"><A href={storyHref(a)} className="hl">{a.title}</A></h3>
                 </article>
               ))}
             </div>
@@ -133,9 +134,9 @@ export function SkatersSection({ skaters, quote }: { skaters: SkaterSummary[]; q
           <Reveal as="article" key={s.id} delay={i * 150} className={cx("group relative flex flex-col gap-3 md:col-span-4", i === 1 && "md:mt-[120px]")}>
             <Tape className={i === 0 ? "left-1/2 -top-3 -ml-[60px]" : "-right-2.5 -top-2"} rotate={i === 0 ? -4 : 30} tint={i === 0 ? "celeste" : "sun"} />
             <Polaroid tilt={i === 0 ? -2 : 2.5} label={`${s.name} — ${s.city}`}>
-              <a href={`/skaters/${s.slug}`} aria-label={`Ver perfil de ${s.name}`} className="block">
+              <A href={`/skaters/${s.slug}`} aria-label={`Ver perfil de ${s.name}`} className="block">
                 <Photo asset={s.profileImage} sizes="(min-width: 768px) 30vw, 100vw" className="aspect-[4/5]" caption="Retrato demo" aspectRatio="4:5" />
-              </a>
+              </A>
             </Polaroid>
             <span className="pt-1.5 text-sm text-muted">{s.isDemo ? "Perfil de demostración" : "Perfil"} · {s.highlights}</span>
           </Reveal>
@@ -156,19 +157,19 @@ export function SpotsSection({ spots }: { spots: SpotSummary[] }) {
             <Scribble width={300} className="hidden md:block" />
           </div>
           <p className="m-0 max-w-[48ch] text-lg leading-relaxed md:col-span-6 md:justify-self-end">
-            Directorio editorial de skateparks y spots callejeros, por departamento. Los de abajo son de demostración: sin ubicaciones reales. El mapa interactivo llega en una próxima etapa.
+            Directorio editorial de skateparks y spots callejeros, por departamento. Los de abajo son de demostración: sin ubicaciones reales. Los spots de calle y DIY se publican solo con departamento y barrio, para cuidarlos.
           </p>
         </div>
         <ul className="m-0 list-none border-t-2 border-ink p-0">
           {spots.map((s, i) => (
             <li key={s.id} className="group grid grid-cols-[40px_1fr] items-center gap-6 border-b border-stone py-5 transition-colors hover:bg-celeste/25 md:grid-cols-[72px_2fr_1fr_1fr_1.4fr_120px]">
               <span aria-hidden="true" className="font-display text-[32px] text-accent">{pad2(i + 1)}</span>
-              <a href={`/spots/${s.slug}`} className="font-display text-[22px] leading-[1.05] md:text-[26px]">
+              <A href={`/spots/${s.slug}`} className="font-display text-[22px] leading-[1.05] md:text-[26px]">
                 <span className="hl">{s.name}</span>
                 <span className="mt-1 block font-sans text-sm font-normal text-muted md:hidden">
                   {DEPARTMENT_LABELS[s.department]} · {SPOT_TYPE_LABELS[s.type]}
                 </span>
-              </a>
+              </A>
               <span className="label hidden text-[13px] md:block">{DEPARTMENT_LABELS[s.department]}</span>
               <span className="hidden text-[15px] md:block">{SPOT_TYPE_LABELS[s.type]}</span>
               <span className="hidden text-[15px] text-muted md:block">{s.features.map((f) => SPOT_FEATURE_LABELS[f]).join(" · ")}</span>
@@ -194,33 +195,33 @@ export function CultureSection({ items }: { items: ArticleSummary[] }) {
       <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
         {big && (
           <Reveal as="article" className="group relative flex flex-col gap-3.5 md:col-span-5 md:row-span-2">
-            <a href={storyHref(big)} aria-label={`Leer: ${big.title}`}><Photo asset={big.coverImage} sizes="(min-width: 768px) 42vw, 100vw" className="h-[360px] md:h-[560px]" caption="Foto demo · color" /></a>
+            <A href={storyHref(big)} aria-label={`Leer: ${big.title}`}><Photo asset={big.coverImage} sizes="(min-width: 768px) 42vw, 100vw" className="h-[360px] md:h-[560px]" caption="Foto demo · color" /></A>
             <Sticker tone="sun" rotate={6} className="-right-3 top-6">Do it yourself</Sticker>
             <Tag demo={big.isDemo}>Marcas</Tag>
-            <h3 className="m-0 font-display text-3xl leading-none md:text-4xl"><a href={storyHref(big)} className="hl">{big.title}</a></h3>
+            <h3 className="m-0 font-display text-3xl leading-none md:text-4xl"><A href={storyHref(big)} className="hl">{big.title}</A></h3>
           </Reveal>
         )}
         {music && (
           <article className="group flex flex-col gap-2.5 border-t-2 border-ink pt-4 md:col-span-4">
             <Tag demo={music.isDemo}>Música</Tag>
-            <h3 className="m-0 font-display text-[28px] leading-[1.05]"><a href={storyHref(music)} className="hl">{music.title}</a></h3>
+            <h3 className="m-0 font-display text-[28px] leading-[1.05]"><A href={storyHref(music)} className="hl">{music.title}</A></h3>
             {music.excerpt && <p className="m-0 text-[15px] leading-relaxed text-body">{music.excerpt}</p>}
           </article>
         )}
         {art && (
           <article className="group flex flex-col gap-2.5 border-t-2 border-ink pt-4 md:col-span-3">
             <Tag demo={art.isDemo}>Arte</Tag>
-            <h3 className="m-0 font-display text-[22px] leading-[1.05]"><a href={storyHref(art)} className="hl">{art.title}</a></h3>
+            <h3 className="m-0 font-display text-[22px] leading-[1.05]"><A href={storyHref(art)} className="hl">{art.title}</A></h3>
           </article>
         )}
         {doc && (
           <article className="group grid grid-cols-1 items-end gap-6 sm:grid-cols-2 md:col-span-7">
             <FilmFrame frame="VHS ▸ 1998">
-              <a href={storyHref(doc)} aria-label={`Ver: ${doc.title}`} className="block"><Photo asset={doc.coverImage} sizes="(min-width: 768px) 28vw, 100vw" className="h-[220px]" caption="Still demo" /></a>
+              <A href={storyHref(doc)} aria-label={`Ver: ${doc.title}`} className="block"><Photo asset={doc.coverImage} sizes="(min-width: 768px) 28vw, 100vw" className="h-[220px]" caption="Still demo" /></A>
             </FilmFrame>
             <div className="flex flex-col gap-2.5">
               <Tag demo={doc.isDemo}>Documental</Tag>
-              <h3 className="m-0 font-display text-[26px] leading-[1.05]"><a href={storyHref(doc)} className="hl">{doc.title}</a></h3>
+              <h3 className="m-0 font-display text-[26px] leading-[1.05]"><A href={storyHref(doc)} className="hl">{doc.title}</A></h3>
             </div>
           </article>
         )}
@@ -249,10 +250,10 @@ export function EventsSection({ events, now }: { events: EventSummary[]; now: Da
                     <span className="font-display text-[56px] text-sun md:text-[72px]">{d.day}</span>
                     <span className="label text-base tracking-[0.16em]">{d.month} {d.year}</span>
                   </time>
-                  <a href={`/events/${e.slug}`} className="flex flex-col gap-1.5">
+                  <A href={`/events/${e.slug}`} className="flex flex-col gap-1.5">
                     <span className="hl font-display text-2xl uppercase leading-[1.05] md:text-[30px]">{e.name}</span>
                     <span className="text-sm text-stone">{e.isDemo ? "Evento de demostración" : "Evento"} · {d.time} h<span className="md:hidden"> · {e.location}</span></span>
-                  </a>
+                  </A>
                   <span className="hidden text-[15px] text-stone md:block">{e.location}</span>
                   <span aria-hidden="true" className={cx("hidden justify-self-start px-2.5 py-1.5 font-display text-[13px] tracking-[0.08em] text-ink md:block", i % 2 ? "bg-sun" : "bg-celeste")} style={{ transform: `rotate(${i % 2 ? 3 : -4}deg)` }}>PRÓXIMO</span>
                 </li>

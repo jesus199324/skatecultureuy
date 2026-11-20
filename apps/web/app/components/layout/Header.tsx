@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router";
 import { NAV_ITEMS } from "../../../../../packages/shared/src";
 import { MarkerNote, cx } from "../ui/primitives";
+import { A } from "../ui/A";
 
 export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   return (
@@ -17,8 +19,8 @@ function TopBar() {
       <div className="label mx-auto flex h-10 max-w-[1440px] items-center justify-between px-5 text-[13px] font-medium md:px-12">
         <span>Revista independiente<span className="hidden sm:inline"> · Hecha en Uruguay</span></span>
         <span className="hidden gap-6 md:flex">
-          <a href="https://instagram.com/" className="hover:text-sun">Instagram</a>
-          <a href="/about#enviar" className="hover:text-sun">Enviar material →</a>
+          <A href="https://instagram.com/" className="hover:text-sun">Instagram</A>
+          <A href="/about#enviar" className="hover:text-sun">Enviar material →</A>
         </span>
       </div>
     </div>
@@ -36,8 +38,14 @@ function DecksIcon() {
   );
 }
 
-export function Header({ currentPath = "/" }: { currentPath?: string }) {
+/** Sección activa: /spots y /spots/lo-que-sea marcan SPOTS. */
+export const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
+
+export function Header() {
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  // Al navegar a otra página, el menú se cierra.
+  useEffect(() => setOpen(false), [pathname]);
   const [menuTop, setMenuTop] = useState(0);
   const headerRef = useRef<HTMLElement>(null);
   const firstLink = useRef<HTMLAnchorElement>(null);
@@ -68,20 +76,23 @@ export function Header({ currentPath = "/" }: { currentPath?: string }) {
       <TopBar />
       <header ref={headerRef} className="sticky top-0 z-30 border-b-2 border-ink bg-bone lg:static">
         <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-5 py-3 md:items-end md:gap-6 md:px-12 md:pb-5 md:pt-7">
-          <a href="/" aria-label="SKATE CULTURE UY, inicio" className="flex flex-col gap-2">
+          <A href="/" aria-label="SKATE CULTURE UY, inicio" className="flex flex-col gap-2">
             <Logo />
             <span className="label hidden text-[11px] font-semibold tracking-[0.28em] text-muted sm:block md:text-[13px]">THE CULTURE. THE PEOPLE. THE STREETS.</span>
-          </a>
+          </A>
           <nav aria-label="Secciones" className="hidden gap-6 pb-1.5 lg:flex">
-            {NAV_ITEMS.map((item, i) => (
-              <a
+            {NAV_ITEMS.map((item) => (
+              <A
                 key={item.href}
                 href={item.href}
-                aria-current={currentPath === item.href ? "page" : undefined}
-                className={cx("label text-[15px] tracking-[0.14em] hover:text-accent", i === 0 && "text-accent")}
+                aria-current={isActive(pathname, item.href) ? "page" : undefined}
+                className={cx(
+                  "label border-b-[3px] pb-0.5 text-[15px] tracking-[0.14em] hover:text-accent",
+                  isActive(pathname, item.href) ? "border-accent text-accent" : "border-transparent",
+                )}
               >
                 {item.label}
-              </a>
+              </A>
             ))}
           </nav>
           <button
@@ -107,20 +118,21 @@ export function Header({ currentPath = "/" }: { currentPath?: string }) {
           <ul className="m-0 flex list-none flex-col gap-2 p-5">
             {NAV_ITEMS.map((item, i) => (
               <li key={item.href}>
-                <a
+                <A
                   ref={i === 0 ? firstLink : undefined}
                   href={item.href}
+                  aria-current={isActive(pathname, item.href) ? "page" : undefined}
                   onClick={() => setOpen(false)}
-                  className={cx("block py-1 font-display text-[32px] leading-[1.05] hover:text-celeste", i === 0 ? "text-celeste" : "text-bone")}
+                  className={cx("block py-1 font-display text-[32px] leading-[1.05] hover:text-celeste", isActive(pathname, item.href) ? "text-celeste" : "text-bone")}
                 >
                   {item.label}
-                </a>
+                </A>
               </li>
             ))}
           </ul>
-          <a href="/about#enviar" className="mt-auto p-5 text-lg" onClick={() => setOpen(false)}>
+          <A href="/about#enviar" className="mt-auto p-5 text-lg" onClick={() => setOpen(false)}>
             <MarkerNote className="text-sun" rotate={-3}>enviá tu material →</MarkerNote>
-          </a>
+          </A>
         </nav>
       )}
     </>

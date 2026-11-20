@@ -1,32 +1,11 @@
 /**
- * Prueba de flujos reales de la portada en Chromium (Playwright).
- * Uso: node tests/e2e/home.e2e.mjs [carpeta-dist] [carpeta-capturas]
+ * Flujos de la portada en Chromium (Playwright). Lo ejecuta tests/e2e/run.mjs.
  */
-import { chromium } from "playwright";
-import http from "node:http";
-import fs from "node:fs";
 import path from "node:path";
 import assert from "node:assert/strict";
 
-const dist = path.resolve(process.argv[2] ?? "dist");
-const shots = path.resolve(process.argv[3] ?? "tests/e2e/screenshots");
-fs.mkdirSync(shots, { recursive: true });
-
-const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css" };
-const server = http.createServer((req, res) => {
-  const file = path.join(dist, req.url === "/" ? "index.html" : req.url.split("?")[0]);
-  if (!file.startsWith(dist) || !fs.existsSync(file)) return res.writeHead(404).end();
-  res.writeHead(200, { "content-type": types[path.extname(file)] ?? "application/octet-stream" }).end(fs.readFileSync(file));
-});
-await new Promise((r) => server.listen(0, r));
-const url = `http://127.0.0.1:${server.address().port}/`;
-
-const browser = await chromium.launch();
-const results = [];
-const check = async (name, fn) => {
-  try { await fn(); results.push(["✓", name]); } catch (e) { results.push(["✗", name, e.message.split("\n")[0]]); }
-};
-
+export async function homeSuite({ browser, baseUrl, shots, check }) {
+  const url = `${baseUrl}/`;
 for (const vp of [{ name: "desktop", width: 1440, height: 900 }, { name: "mobile", width: 390, height: 844 }]) {
   const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, permissions: ["clipboard-read", "clipboard-write"] });
   const page = await ctx.newPage();
@@ -35,6 +14,7 @@ for (const vp of [{ name: "desktop", width: 1440, height: 900 }, { name: "mobile
   page.on("console", (m) => { if (m.type() === "error" && !/fonts\.g/.test(m.text()) && !/ERR_|Failed to load resource/.test(m.text())) errors.push(m.text()); });
   await page.route(/fonts\.(googleapis|gstatic)\.com/, (r) => r.abort());
   await page.goto(url, { waitUntil: "load" });
+  await page.waitForSelector("html[data-hydrated]");
   const P = `[${vp.name}]`;
 
   await check(`${P} renderiza todas las secciones`, async () => {
@@ -134,9 +114,4 @@ for (const vp of [{ name: "desktop", width: 1440, height: 900 }, { name: "mobile
   await ctx.close();
 }
 
-await browser.close();
-server.close();
-for (const r of results) console.log(r.join("  "));
-const failed = results.filter((r) => r[0] === "✗").length;
-console.log(`\n${results.length - failed}/${results.length} pruebas OK`);
-process.exit(failed ? 1 : 0);
+}

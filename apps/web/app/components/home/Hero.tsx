@@ -1,6 +1,7 @@
 import type { ArticleSummary } from "../../../../../packages/shared/src";
 import { FilmFrame, Photo } from "../editorial/Photo";
 import { MarkerNote, Scribble, Tag } from "../ui/primitives";
+import { A } from "../ui/A";
 
 /**
  * Bandera de Uruguay recortada en círculo: 9 franjas (5 blancas, 4 azules),
@@ -56,9 +57,9 @@ export function Hero({ story }: { story: ArticleSummary }) {
       <article className="group grid grid-cols-1 items-end gap-8 md:grid-cols-12">
         <div className="relative md:col-span-8">
           <FilmFrame frame="SCUY 400 ▸ 12A" tilt={-0.6}>
-            <a href={href} aria-label={`Leer: ${story.title}`} className="block">
+            <A href={href} aria-label={`Leer: ${story.title}`} className="block">
               <Photo asset={story.coverImage} priority sizes="(min-width: 768px) 66vw, 100vw" className="h-[440px] md:h-[640px]" caption="Foto demo · sesión nocturna, B/N" />
-            </a>
+            </A>
           </FilmFrame>
           <span
             aria-hidden="true"
@@ -78,7 +79,7 @@ export function Hero({ story }: { story: ArticleSummary }) {
           </span>
           <Tag demo={story.isDemo}>{story.category.name} · Crónica</Tag>
           <h1 className="m-0 font-display text-[46px] uppercase leading-[0.92] tracking-[-0.025em] md:text-[66px]">
-            <a href={href} className="hl">{story.title}</a>
+            <A href={href} className="hl">{story.title}</A>
           </h1>
           <Scribble className="-mt-1.5" />
           <p className="m-0 max-w-[40ch] text-lg leading-relaxed text-body">{story.excerpt}</p>
