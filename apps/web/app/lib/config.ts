@@ -1,10 +1,9 @@
 /**
- * Configuración pública del front. En el proyecto final viene de
- * import.meta.env (Vite); en el prototipo, de window.__SCUY_ENV__.
+ * Configuración pública del front (no son secretos). Vite la toma de las
+ * variables VITE_* del entorno al compilar; ver .env.example.
  */
-type PublicEnv = { CLOUDINARY_CLOUD_NAME?: string; SITE_URL?: string };
+const env: Record<string, string | undefined> = (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
 
-const env: PublicEnv = (typeof window !== "undefined" && (window as unknown as { __SCUY_ENV__?: PublicEnv }).__SCUY_ENV__) || {};
-
-export const CLOUDINARY_CLOUD_NAME = env.CLOUDINARY_CLOUD_NAME ?? "";
-export const SITE_URL = env.SITE_URL ?? (typeof window !== "undefined" ? window.location.origin : "https://skateculture.uy");
+export const CLOUDINARY_CLOUD_NAME = env.VITE_CLOUDINARY_CLOUD_NAME ?? "";
+export const SITE_URL = (env.VITE_SITE_URL ?? "https://skateculture.uy").replace(/\/$/, "");
+export const SITE_NAME = "SKATE CULTURE UY";

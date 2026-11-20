@@ -59,3 +59,11 @@ export const NAV_ITEMS = [
   { label: "EVENTS", href: "/events" },
   { label: "ABOUT", href: "/about" },
 ] as const;
+
+export const ARTICLE_FORMAT_LABELS: Record<import("./types").ArticleFormat, string> = {
+  STORY: "Historia",
+  INTERVIEW: "Entrevista",
+  GALLERY: "Galería",
+  VIDEO: "Video",
+  NEWS: "Noticia",
+};

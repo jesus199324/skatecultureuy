@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SITE_URL } from "../../lib/config";
 import { absoluteUrl, copyLink, shareOrCopy, whatsappShareUrl } from "../../lib/share";
 import { cx } from "../ui/primitives";
+import { A } from "../ui/A";
 
 const btn = "label inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 border border-stone px-2.5 text-[12px] text-ink transition-colors hover:border-ink cursor-pointer bg-transparent";
 
@@ -29,9 +30,9 @@ export function ShareButtons({ title, path, compact = false }: { title: string; 
 
   return (
     <div className="flex flex-wrap items-center gap-2" aria-label="Compartir">
-      <a className={btn} href={whatsappShareUrl(title, url)} target="_blank" rel="noopener noreferrer" aria-label={`Compartir por WhatsApp: ${title}`}>
+      <A className={btn} href={whatsappShareUrl(title, url)} target="_blank" rel="noopener noreferrer" aria-label={`Compartir por WhatsApp: ${title}`}>
         <ChatIcon /> WhatsApp
-      </a>
+      </A>
       <button type="button" className={btn} onClick={async () => {
         const r = await shareOrCopy({ title, url });
         if (r === "copied") flash("Link copiado");

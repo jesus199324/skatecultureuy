@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cx } from "../ui/primitives";
+import { A } from "../ui/A";
 
 /** Título gigante de sección (STREET, SPOTS...). */
 export function SectionTitle({ id, children, size = "xl", tilt = 0, className }: { id: string; children: ReactNode; size?: "lg" | "xl"; tilt?: number; className?: string }) {
@@ -23,7 +24,7 @@ export function RuleHeader({ id, title, href, linkLabel = "Ver todo →", onDark
   return (
     <div className={cx("mb-8 flex items-baseline justify-between border-t-[6px] pt-3.5", onDark ? "border-bone" : "border-ink")}>
       <h2 id={id} className="label m-0 text-xl tracking-[0.16em]">{title}</h2>
-      <a href={href} className={cx("label text-[13px]", onDark ? "text-bone hover:text-sun" : "text-accent hover:text-ink")}>{linkLabel}</a>
+      <A href={href} className={cx("label text-[13px]", onDark ? "text-bone hover:text-sun" : "text-accent hover:text-ink")}>{linkLabel}</A>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { A } from "./A";
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
 export { cx };
@@ -114,8 +115,8 @@ export function ButtonLink({ href, children, variant = "outline", className }: {
     "outline-light": "border-2 border-bone text-bone hover:bg-bone hover:text-ink",
   };
   return (
-    <a href={href} className={cx("label inline-flex min-h-11 items-center gap-2 px-5 text-sm transition-colors", variants[variant], className)}>
+    <A href={href} className={cx("label inline-flex min-h-11 items-center gap-2 px-5 text-sm transition-colors", variants[variant], className)}>
       {children}
-    </a>
+    </A>
   );
 }

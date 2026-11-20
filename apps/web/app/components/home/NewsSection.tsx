@@ -7,6 +7,7 @@ import { Reveal } from "../editorial/Reveal";
 import { SectionTitle } from "../editorial/SectionTitle";
 import { ShareButtons } from "../editorial/ShareButtons";
 import { ButtonLink, DemoBadge, MarkerNote, Sticker, SunDoodle } from "../ui/primitives";
+import { A } from "../ui/A";
 
 type TopicFilter = "TODAS" | NewsTopic;
 const OPTIONS: FilterOption<TopicFilter>[] = [
@@ -35,15 +36,15 @@ export function NewsSection({ items, now }: { items: ArticleSummary[]; now: Date
         ) : (
           <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-12">
             <Reveal as="article" className="group relative flex flex-col gap-3.5 md:col-span-5">
-              <a href={`/stories/${lead.slug}`} aria-label={`Leer: ${lead.title}`} className="block">
+              <A href={`/stories/${lead.slug}`} aria-label={`Leer: ${lead.title}`} className="block">
                 <Photo asset={lead.coverImage} sizes="(min-width: 768px) 40vw, 100vw" className="h-[300px] md:h-[380px]" caption="Foto demo" />
-              </a>
+              </A>
               {Date.parse(lead.publishedAt) > now.getTime() - 24 * 3600_000 && (
                 <Sticker tone="celeste" rotate={-8} className="-left-3.5 -top-3.5">¡Nuevo!</Sticker>
               )}
               <NewsMeta article={lead} now={now} />
               <h3 className="m-0 font-display text-3xl leading-none md:text-[38px]">
-                <a href={`/stories/${lead.slug}`} className="hl">{lead.title}</a>
+                <A href={`/stories/${lead.slug}`} className="hl">{lead.title}</A>
               </h3>
               {lead.excerpt && <p className="m-0 text-base leading-relaxed text-body">{lead.excerpt}</p>}
               <ShareButtons title={lead.title} path={`/stories/${lead.slug}`} />
@@ -53,10 +54,10 @@ export function NewsSection({ items, now }: { items: ArticleSummary[]; now: Date
               {rest.map((n) => (
                 <li key={n.id} className="group grid grid-cols-1 items-center gap-2 border-b border-stone py-4.5 md:grid-cols-[120px_1fr_auto] md:gap-5">
                   <NewsMeta article={n} now={now} stacked />
-                  <a href={`/stories/${n.slug}`} className="font-display text-[21px] leading-[1.1]">
+                  <A href={`/stories/${n.slug}`} className="font-display text-[21px] leading-[1.1]">
                     <span className="hl">{n.title}</span>
                     {n.isDemo && <DemoBadge />}
-                  </a>
+                  </A>
                   <div className="hidden md:block">
                     <ShareButtons compact title={n.title} path={`/stories/${n.slug}`} />
                   </div>
@@ -64,10 +65,10 @@ export function NewsSection({ items, now }: { items: ArticleSummary[]; now: Date
               ))}
               <li className="flex flex-wrap items-center justify-between gap-4 pt-5">
                 <ButtonLink href="/news" variant="solid">Todas las noticias →</ButtonLink>
-                <a href="/about#enviar" className="flex items-center gap-2">
+                <A href="/about#enviar" className="flex items-center gap-2">
                   <MarkerNote className="text-xl" rotate={0}>¿tenés una noticia? mandala</MarkerNote>
                   <svg width="34" height="20" viewBox="0 0 34 20" aria-hidden="true"><path d="M2 14 C 12 4, 20 18, 31 8 M24 6l7 2-3 7" stroke="var(--color-accent)" strokeWidth="2.5" fill="none" strokeLinecap="round" /></svg>
-                </a>
+                </A>
               </li>
             </ol>
           </div>
