@@ -1,0 +1,4 @@
+node_modules
+dist
+apps/web/tests/e2e/screenshots
+.env

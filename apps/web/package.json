@@ -1,0 +1,20 @@
+{
+  "name": "@scuy/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prototype:build": "node scripts/build-prototype.mjs",
+    "test": "bun test tests/unit && node tests/e2e/home.e2e.mjs dist tests/e2e/screenshots",
+    "test:unit": "bun test tests/unit",
+    "test:e2e": "node tests/e2e/home.e2e.mjs dist tests/e2e/screenshots"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.3.0",
+    "playwright": "^1.63.0",
+    "typescript": "^6.0.0"
+  }
+}

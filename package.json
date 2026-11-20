@@ -1,0 +1,11 @@
+{
+  "name": "skate-culture-uy",
+  "private": true,
+  "description": "SKATE CULTURE UY — revista digital de skateboarding uruguayo",
+  "workspaces": ["apps/*", "packages/*"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "prototype": "npm run prototype:build -w apps/web",
+    "test": "npm run test -w apps/web"
+  }
+}

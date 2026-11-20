@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+/* ───────── Tokens de SKATE CULTURE UY ───────── */
+@theme {
+  --color-ink: #111111;        /* negro */
+  --color-bone: #F2F0EA;       /* hueso */
+  --color-stone: #B8B5AD;      /* gris: solo sobre negro o en filetes */
+  --color-concrete: #E8E5DC;   /* hueso oscuro para bandas */
+  --color-paper: #FBFAF6;      /* marco de polaroid */
+  --color-muted: #5E5B55;      /* gris de texto sobre hueso (AA) */
+  --color-body: #2E2D2A;       /* texto de lectura */
+  --color-asphalt: #2B2A28;    /* placeholder de foto */
+  --color-accent: #001489;     /* azul de la bandera: texto y acentos sobre hueso (12,6:1) */
+  --color-celeste: #75AADB;    /* celeste bandera: superficies y texto sobre negro (7,7:1) */
+  --color-accent-soft: #75AADB;/* alias: acento legible sobre negro */
+  --color-sun: #FCD116;        /* amarillo del Sol de Mayo (bandera) */
+
+  --font-display: "Archivo Black", "Arial Black", sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-label: "Archivo Narrow", "Arial Narrow", sans-serif;
+  --font-marker: "Permanent Marker", cursive;
+
+  --animate-ticker: ticker 48s linear infinite;
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+}
+
+@layer base {
+  html { background: var(--color-bone); color: var(--color-ink); }
+  body { margin: 0; font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 3px solid var(--color-sun); outline-offset: 2px; }
+}
+
+/* Etiqueta condensada en mayúsculas */
+@utility label {
+  font-family: var(--font-label);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Título que se subraya en rojo al pasar sobre la tarjeta (usar con group) */
+@utility hl {
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s ease;
+  :where(.group):hover & { text-decoration-color: var(--color-accent); }
+}
+
+/* Marco de rollo fotográfico con perforaciones */
+@utility film {
+  position: relative;
+  background: var(--color-ink);
+  padding: 30px 0;
+  &::before, &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: repeating-linear-gradient(90deg, transparent 0 10px, var(--color-bone) 10px 22px, transparent 22px 34px);
+  }
+  &::before { top: 9px; }
+  &::after { bottom: 9px; }
+}
+
+/* Puntos de impresión sobre celeste */
+@utility halftone {
+  background-color: var(--color-celeste);
+  background-image: radial-gradient(rgb(17 17 17 / 0.28) 1.4px, transparent 1.6px);
+  background-size: 9px 9px;
+}
+
+/* Franja de cinta de obra: negro y amarillo sol */
+@utility sun-stripe {
+  background: repeating-linear-gradient(45deg, var(--color-ink) 0 10px, var(--color-sun) 10px 20px);
+}
+
+/* Franjas de la bandera: 5 blancas y 4 azules */
+@utility flag-stripes {
+  background: repeating-linear-gradient(to bottom, var(--color-bone) 0 11.111%, var(--color-accent) 11.111% 22.222%);
+}
+
+/* Cinta adhesiva sobre fotos */
+@utility tape {
+  position: absolute;
+  width: 120px;
+  height: 30px;
+  background: rgb(242 240 234 / 0.8);
+  border-inline: 2px dashed rgb(17 17 17 / 0.15);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Zoom sutil de la foto al pasar sobre la tarjeta */
+@utility photo-zoom {
+  transition: transform 0.5s ease;
+  :where(.group):hover & { transform: scale(1.04); }
+}
+
+/* Aparición progresiva al hacer scroll (solo con JS) */
+.js [data-reveal="out"] { opacity: 0; transform: translateY(18px); }
+[data-reveal] { transition: opacity 0.6s ease, transform 0.6s ease; }
+
+/* Ícono de menú: tres tablas que se cruzan en X */
+.deck { transition: transform 0.3s ease, opacity 0.2s ease, fill 0.2s ease; transform-box: fill-box; transform-origin: center; }
+[aria-expanded="true"] .deck-1 { transform: translateY(6.75px) rotate(45deg); fill: var(--color-bone); }
+[aria-expanded="true"] .deck-2 { opacity: 0; transform: scaleX(0.2); }
+[aria-expanded="true"] .deck-3 { transform: translateY(-6.75px) rotate(-45deg); fill: var(--color-bone); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js [data-reveal="out"] { opacity: 1; transform: none; }
+}
