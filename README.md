@@ -4,7 +4,7 @@
 
 Revista digital independiente de skateboarding uruguayo. Proyecto full stack: React + TypeScript + Tailwind en el front; Node + Express + PostgreSQL (Drizzle ORM) en el back.
 
-> Estado: **Fase 4 terminada**: API pública de solo lectura con PostgreSQL y datos de demostración. Las páginas todavía leen el demo local y pasan a leer la API en la Fase 6. El README completo (instalación, API, deploy) llega en la Fase 8.
+> Estado: **Fase 5a terminada**: login del staff y API de administración. Faltan las pantallas del panel y la subida de fotos (Fase 5b). Las páginas pasan a leer la API en la Fase 6. El README completo (instalación, API, deploy) llega en la Fase 8.
 
 ## Estructura
 
@@ -29,6 +29,9 @@ apps/web/
 apps/api/
   src/app.ts                Express: seguridad, CORS, límite de pedidos, errores
   src/routes/public.ts      endpoints públicos y validación de parámetros (zod)
+  src/routes/auth.ts        login, logout y usuario actual
+  src/routes/admin/         API del panel: notas, skaters, spots, eventos, fotos, citas y cuentas
+  src/auth/                 contraseñas (Argon2id), sesiones y permisos
   src/services/content.ts   consultas (solo contenido publicado)
   src/lib/serialize.ts      filas de la base → formas públicas (aplica la regla de ubicación de spots)
   src/db/schema.ts          tablas de PostgreSQL (Drizzle)
@@ -73,6 +76,38 @@ Base: `/api`. Solo lectura y solo contenido publicado. Las notas programadas no 
 - **Errores:** `400` si un parámetro no es válido (con `detalles`), `404` si no existe y `500` sin detalles internos.
 - **Ubicación de los spots:** la API nunca devuelve la dirección ni las coordenadas de un spot de calle o DIY, aunque estén guardadas en la base.
 - **Seguridad:** encabezados de Helmet, CORS solo para los orígenes de `CORS_ORIGIN`, límite de pedidos por IP y caché pública de 60 segundos.
+
+## Panel: acceso y API de administración
+
+**Cuentas:** no hay registro público. La primera cuenta (admin) se crea desde la terminal; la contraseña se pide sin mostrarse:
+
+```bash
+npm run staff:create -- --email vos@mail.com --name "Tu nombre"            # ADMIN
+npm run staff:create -- --email otra@mail.com --name "Otra" --role EDITOR
+```
+
+Si el email ya existe, el comando le cambia la contraseña y cierra sus sesiones abiertas.
+
+- **Roles:** `ADMIN` puede todo, incluidas las cuentas. `EDITOR` carga y publica contenido.
+- **Sesión:** cookie `scuy_session` httpOnly y `SameSite=Lax`; en producción solo viaja por HTTPS. En la base se guarda el hash del token. Dura `SESSION_DAYS` días.
+- **Login:** se permiten `LOGIN_ATTEMPTS` intentos fallidos cada 15 minutos por IP y email. Si el email no existe o la contraseña está mal, el mensaje es el mismo.
+- **CSRF:** toda acción que cambia datos lleva el encabezado `X-SCUY-CSRF: 1`.
+
+| Endpoint | Qué hace |
+|---|---|
+| `POST /api/auth/login` · `POST /api/auth/logout` · `GET /api/auth/me` | sesión |
+| `/api/admin/articles` | notas: `GET` (con `?q=`, `?estado=`, `?seccion=`, `?pagina=`), `GET /:id`, `POST`, `PATCH /:id`, `DELETE /:id` |
+| `/api/admin/skaters` · `/spots` · `/events` | igual que las notas |
+| `/api/admin/media` | fotos: alta (con texto alternativo y crédito obligatorios), edición y baja (no se borra una foto en uso) |
+| `/api/admin/quotes` · `/categories` | citas de portada y secciones |
+| `/api/admin/staff` | cuentas (solo `ADMIN`) |
+
+**Reglas de las notas:**
+
+- Una noticia necesita tema; una nota de video, un link de YouTube o Vimeo.
+- Publicar sin fecha publica en ese momento. Con una fecha futura, la nota queda programada.
+- El slug se arma solo a partir del título, y si ya existe responde `409`.
+- `PATCH` cambia solo los campos que se mandan.
 
 ## Base de datos (PostgreSQL)
 

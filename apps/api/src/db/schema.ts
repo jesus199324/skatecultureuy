@@ -239,3 +239,45 @@ export const articleSpotsRelations = relations(articleSpots, ({ one }) => ({
   article: one(articles, { fields: [articleSpots.articleId], references: [articles.id] }),
   spot: one(spots, { fields: [articleSpots.spotId], references: [spots.id] }),
 }));
+
+/* ───────── Panel: cuentas del staff y sesiones ───────── */
+
+export const staffRole = pgEnum("staff_role", ["ADMIN", "EDITOR"]);
+
+/** Cuentas del staff. No hay registro público: se crean con `npm run staff:create` o desde el panel (solo ADMIN). */
+export const staffUsers = pgTable(
+  "staff_users",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    /** Siempre en minúsculas. */
+    email: text("email").notNull(),
+    name: text("name").notNull(),
+    /** Hash Argon2id. Nunca sale por la API. */
+    passwordHash: text("password_hash").notNull(),
+    role: staffRole("role").notNull().default("EDITOR"),
+    active: boolean("active").notNull().default(true),
+    lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (t) => [uniqueIndex("staff_users_email_idx").on(t.email)],
+);
+
+/**
+ * Sesiones abiertas. La cookie lleva un token al azar; en la base se guarda
+ * solo su hash SHA-256 (si alguien lee la base, no puede usar las sesiones).
+ */
+export const sessions = pgTable(
+  "sessions",
+  {
+    id: text("id").primaryKey(),
+    userId: uuid("user_id").notNull().references(() => staffUsers.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    userAgent: text("user_agent"),
+  },
+  (t) => [index("sessions_user_idx").on(t.userId)],
+);
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(staffUsers, { fields: [sessions.userId], references: [staffUsers.id] }),
+}));

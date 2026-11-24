@@ -8,6 +8,20 @@
       "when": 1795545881657,
       "tag": "0000_inicial",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795548899069,
+      "tag": "0001_panel_staff",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795548974423,
+      "tag": "0002_busqueda_sin_tildes",
+      "breakpoints": true
     }
   ]
 }
