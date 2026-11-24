@@ -20,7 +20,7 @@ if (!url) throw new Error("Falta TEST_DATABASE_URL (una base de prueba que se pu
 
 const NOW = Date.now();
 const { db, pool } = createDb(url);
-const config = { CORS_ORIGIN: "https://skateculture.uy,http://localhost:5173", RATE_LIMIT_PER_MINUTE: 1000, NODE_ENV: "test" as const };
+const config = { CORS_ORIGIN: "https://skateculture.uy,http://localhost:5173", RATE_LIMIT_PER_MINUTE: 1000, NODE_ENV: "test" as const, SESSION_DAYS: 7, LOGIN_ATTEMPTS: 5 };
 let base = "";
 let server: ReturnType<ReturnType<typeof createApp>["listen"]>;
 

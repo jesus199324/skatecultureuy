@@ -14,6 +14,10 @@ const schema = z.object({
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
   /** Pedidos por minuto y por IP. */
   RATE_LIMIT_PER_MINUTE: z.coerce.number().int().positive().default(120),
+  /** Días que dura una sesión del panel sin volver a iniciar sesión. */
+  SESSION_DAYS: z.coerce.number().int().min(1).max(90).default(7),
+  /** Intentos de login permitidos cada 15 minutos (por IP y email). */
+  LOGIN_ATTEMPTS: z.coerce.number().int().positive().default(5),
 });
 
 export type Config = z.infer<typeof schema>;

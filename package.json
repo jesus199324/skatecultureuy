@@ -21,6 +21,7 @@
     "db:reset": "npm run db:reset -w apps/api",
     "test": "npm run test -w apps/web && npm run test -w apps/api",
     "test:web": "npm run test -w apps/web",
-    "test:api": "npm run test -w apps/api"
+    "test:api": "npm run test -w apps/api",
+    "staff:create": "npm run staff:create -w apps/api --"
   }
 }
