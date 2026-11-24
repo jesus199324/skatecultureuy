@@ -4,3 +4,4 @@ apps/web/tests/e2e/screenshots
 .env
 build
 .react-router
+.env.test

@@ -6,7 +6,7 @@
  */
 import type {
   ArticleSummary, Category, EventSummary, HomePayload, MediaAsset, NewsTopic, SkaterSummary, SpotSummary,
-} from "../../../../packages/shared/src";
+} from "../index";
 
 const cat = (name: string, slug: string): Category => ({ id: `cat-${slug}`, name, slug });
 export const CATEGORIES = {

@@ -7,41 +7,17 @@
  * bien y se puedan compartir: /news?tema=competencias, /spots?depto=rocha.
  */
 import {
-  DEPARTMENT_LABELS, PAGE_SIZE,
+  DEPARTMENT_LABELS, DEPARTMENT_PARAM, FORMAT_PARAM, PAGE_SIZE, SPOT_TYPE_PARAM, TOPIC_PARAM, fromParam, parsePage, slugify,
+  type ArticleSection, type EventWhen,
   type ArticleDetail, type ArticleFormat, type ArticleSummary, type Department, type EventDetail, type EventSummary,
   type HomePayload, type NewsTopic, type Paginated, type SkaterDetail, type SkaterSummary, type SpotDetail, type SpotSummary, type SpotType,
 } from "../../../../packages/shared/src";
-import { buildDemoDb, type DemoDb } from "./demo-content";
-import { buildDemoHome } from "./demo-data";
+import { buildDemoDb, type DemoDb } from "../../../../packages/shared/src/demo/content";
+import { buildDemoHome } from "../../../../packages/shared/src/demo/home";
 import { eventState } from "./format";
 
-/* ───────── Valores de filtro en la URL ───────── */
-
-export const slugify = (s: string) =>
-  s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-
-export const TOPIC_PARAM: Record<NewsTopic, string> = {
-  ESCENA_LOCAL: "escena-local", COMPETENCIAS: "competencias", INTERNACIONAL: "internacional", INDUSTRIA: "industria",
-};
-export const FORMAT_PARAM: Record<Exclude<ArticleFormat, "NEWS">, string> = {
-  STORY: "historias", INTERVIEW: "entrevistas", GALLERY: "galerias", VIDEO: "videos",
-};
-export const SPOT_TYPE_PARAM: Record<SpotType, string> = { SKATEPARK: "skatepark", STREET: "calle", DIY: "diy" };
-export const DEPARTMENT_PARAM = Object.fromEntries(
-  (Object.keys(DEPARTMENT_LABELS) as Department[]).map((d) => [d, slugify(DEPARTMENT_LABELS[d])]),
-) as Record<Department, string>;
-
-/** Busca la clave cuyo valor de URL coincide; si no hay o no es válido, null (= "todos"). */
-export function fromParam<K extends string>(map: Record<K, string>, value: string | null): K | null {
-  if (!value) return null;
-  return (Object.keys(map) as K[]).find((k) => map[k] === value) ?? null;
-}
-
-/** "Cargar más": la página 3 trae los primeros 27 items. Valores raros = página 1. */
-export function parsePage(value: string | null): number {
-  const n = Number(value);
-  return Number.isInteger(n) && n >= 1 && n <= 100 ? n : 1;
-}
+export { DEPARTMENT_PARAM, FORMAT_PARAM, SPOT_TYPE_PARAM, TOPIC_PARAM, fromParam, parsePage, slugify };
+export type { ArticleSection, EventWhen };
 
 export function paginate<T>(all: T[], page: number, pageSize = PAGE_SIZE): Paginated<T> {
   const items = all.slice(0, page * pageSize);
@@ -61,7 +37,6 @@ function db(now: number): DemoDb {
 const toSummary = ({ body: _b, gallery: _g, video: _v, skaters: _s, spots: _p, related: _r, ...a }: ArticleDetail): ArticleSummary => a;
 const byDateDesc = (a: ArticleSummary, b: ArticleSummary) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt);
 
-export type ArticleSection = "news" | "street" | "culture" | "stories";
 
 export interface ArticleQuery {
   section: ArticleSection;
@@ -117,7 +92,6 @@ export async function getSpot(slug: string, now = Date.now()): Promise<SpotDetai
   return db(now).spots.find((s) => s.slug === slug) ?? null;
 }
 
-export type EventWhen = "proximos" | "pasados";
 
 export async function listEvents(when: EventWhen, now = Date.now()): Promise<EventSummary[]> {
   const nowDate = new Date(now);

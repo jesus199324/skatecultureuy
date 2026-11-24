@@ -8,8 +8,8 @@ import {
   publicLocationPrecision,
   type ArticleBlock, type ArticleDetail, type ArticleFormat, type ArticleSummary, type Department, type EventDetail,
   type MediaAsset, type SkaterDetail, type SpotDetail, type SpotFeature, type SpotType,
-} from "../../../../packages/shared/src";
-import { CATEGORIES, buildDemoHome } from "./demo-data";
+} from "../index";
+import { CATEGORIES, buildDemoHome } from "./home";
 
 export interface DemoDb {
   articles: ArticleDetail[];
