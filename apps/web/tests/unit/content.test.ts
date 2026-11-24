@@ -4,7 +4,7 @@ import {
   DEPARTMENT_PARAM, FORMAT_PARAM, TOPIC_PARAM, fromParam, getArticle, getSpot, listArticles, listEvents, listSkaters, listSpots,
   paginate, parsePage, slugify,
 } from "../../app/lib/content";
-import { buildDemoDb } from "../../app/lib/demo-content";
+import { buildDemoDb } from "../../../../packages/shared/src/demo/content";
 import { buildMeta, clip, jsonLd } from "../../app/lib/seo";
 
 const NOW = new Date("2026-11-20T15:00:00Z").getTime();

@@ -1,0 +1,6 @@
+{
+  "name": "@scuy/shared",
+  "private": true,
+  "type": "module",
+  "description": "Tipos, etiquetas, reglas y contenido demo compartidos entre la web y la API"
+}

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { cloudinarySrcSet, cloudinaryUrl } from "../../app/lib/cloudinary";
-import { buildDemoHome } from "../../app/lib/demo-data";
+import { buildDemoHome } from "../../../../packages/shared/src/demo/home";
 import { eventDateParts, eventState, pad2, relativeTime } from "../../app/lib/format";
 import { absoluteUrl, copyLink, shareOrCopy, whatsappShareUrl } from "../../app/lib/share";
 

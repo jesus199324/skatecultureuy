@@ -2,9 +2,9 @@
 
 **THE CULTURE. THE PEOPLE. THE STREETS.**
 
-Revista digital independiente de skateboarding uruguayo. Proyecto full stack: React + TypeScript + Tailwind en el front; Node + Express + PostgreSQL (Prisma) en el back.
+Revista digital independiente de skateboarding uruguayo. Proyecto full stack: React + TypeScript + Tailwind en el front; Node + Express + PostgreSQL (Drizzle ORM) en el back.
 
-> Estado: **Fase 3 terminada**: navegación y páginas internas con React Router (SSR) y datos de demostración. El README completo (instalación, API, deploy) llega en la Fase 8.
+> Estado: **Fase 4 terminada**: API pública de solo lectura con PostgreSQL y datos de demostración. Las páginas todavía leen el demo local y pasan a leer la API en la Fase 6. El README completo (instalación, API, deploy) llega en la Fase 8.
 
 ## Estructura
 
@@ -26,7 +26,16 @@ apps/web/
     components/pages/       cabeceras, filtros en la URL, "Cargar más", tarjetas, 404
   public/                   favicon, robots.txt, imagen para compartir (og-default.png)
   tests/unit, tests/e2e
-packages/shared/src/        tipos del dominio, etiquetas y reglas (precisión de ubicación, tamaño de página)
+apps/api/
+  src/app.ts                Express: seguridad, CORS, límite de pedidos, errores
+  src/routes/public.ts      endpoints públicos y validación de parámetros (zod)
+  src/services/content.ts   consultas (solo contenido publicado)
+  src/lib/serialize.ts      filas de la base → formas públicas (aplica la regla de ubicación de spots)
+  src/db/schema.ts          tablas de PostgreSQL (Drizzle)
+  src/db/seed-demo.ts       carga y borrado del contenido DEMO
+  drizzle/                  migraciones SQL generadas
+  test/                     tests contra un PostgreSQL real
+packages/shared/src/        tipos del dominio, etiquetas, reglas, parámetros de URL y contenido demo
 ```
 
 ## Páginas
@@ -47,6 +56,44 @@ Los listados largos muestran 9 items y un botón **"Cargar más"** (`?pagina=2` 
 
 **Ubicación de los spots:** los spots de calle y DIY se publican solo con departamento y barrio, para no quemarlos. La dirección exacta y los links para llegar van solo en los skateparks públicos (`publicLocationPrecision` en `packages/shared`).
 
+## API
+
+Base: `/api`. Solo lectura y solo contenido publicado. Las notas programadas no aparecen hasta su fecha de publicación. Los parámetros son los mismos que usan las URLs de la revista.
+
+| Endpoint | Parámetros |
+|---|---|
+| `GET /api/health` | — |
+| `GET /api/home` | — (la misma forma que usa la portada) |
+| `GET /api/articles` | `seccion` (obligatorio: news · street · culture · stories), `tema`, `formato`, `pagina` |
+| `GET /api/articles/:slug` | — |
+| `GET /api/skaters` · `/api/skaters/:slug` | `pagina` |
+| `GET /api/spots` · `/api/spots/:slug` | `depto`, `tipo`, `pagina` (la lista trae también `departments` para el filtro) |
+| `GET /api/events` · `/api/events/:slug` | `cuando` (proximos · pasados) |
+
+- **Errores:** `400` si un parámetro no es válido (con `detalles`), `404` si no existe y `500` sin detalles internos.
+- **Ubicación de los spots:** la API nunca devuelve la dirección ni las coordenadas de un spot de calle o DIY, aunque estén guardadas en la base.
+- **Seguridad:** encabezados de Helmet, CORS solo para los orígenes de `CORS_ORIGIN`, límite de pedidos por IP y caché pública de 60 segundos.
+
+## Base de datos (PostgreSQL)
+
+**Con Neon** (recomendado, gratis):
+
+1. En [neon.tech](https://neon.tech) creá un proyecto y copiá la connection string.
+2. Creá también una rama `test` para los tests.
+3. Copiá `apps/api/.env.example` como `apps/api/.env` y completá `DATABASE_URL`.
+4. Creá `apps/api/.env.test` con `DATABASE_URL` y `TEST_DATABASE_URL` apuntando a la rama `test`.
+
+**Con Docker:** `docker compose up -d`. Las URLs están en `docker-compose.yml`.
+
+```bash
+npm run db:migrate     # crea las tablas
+npm run db:seed        # carga el contenido DEMO (se puede repetir)
+npm run dev:api        # http://localhost:4000/api
+npm run db:reset       # borra solo el DEMO (antes de lanzar); con -- --todo vacía todo (no en producción)
+```
+
+Si cambiás `apps/api/src/db/schema.ts`, generá la migración con `npm run db:generate -w apps/api`.
+
 ## Desarrollo
 
 Requisitos: Node 22 y [Bun](https://bun.sh) (tests de unidad). Para los tests en navegador, Playwright con Chromium (`npx playwright install chromium`).
@@ -57,7 +104,7 @@ npm run dev          # http://localhost:5173
 npm run build        # build de producción (apps/web/build)
 npm start            # sirve el build con SSR (puerto 3000)
 npm run typecheck
-npm test             # unidad (Bun) + build + flujos en navegador (Playwright)
+npm test             # web: unidad (Bun) + build + navegador (Playwright) · API: tests contra PostgreSQL
 ```
 
 Configuración pública: copiá `apps/web/.env.example` como `apps/web/.env`.
